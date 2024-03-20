@@ -44,11 +44,6 @@ class EmployeeListScreen extends StatelessWidget {
             itemCount: employees.length,
             itemBuilder: (BuildContext context, int index) {
               final employee = employees[index];
-              Color backgroundColor = Colors.white;
-              if (employee.yearsWithCompany > 5 && employee.isActive) {
-                backgroundColor =
-                    Colors.green; // Flagged employees in green color
-              }
               return Container(
                 padding: const EdgeInsets.all(20),
                 margin: const EdgeInsets.all(10),
