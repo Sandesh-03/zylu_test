@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "909427331813",
+    "project_id": "zylutest",
+    "storage_bucket": "zylutest.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:909427331813:android:c147eba0e51238cf05fa0c",
+        "android_client_info": {
+          "package_name": "com.example.zylu_test"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4b3hfVW_lMyG2GGcWh2hwC6QosPY8b2I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
