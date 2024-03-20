@@ -20,7 +20,9 @@ class EmployeeListScreen extends StatelessWidget {
               icon: const Icon(Icons.add))
         ],
       ),
-      body: StreamBuilder<QuerySnapshot>(
+      body: RefreshIndicator(
+        onRefresh: () async{
+      StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('employees').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
@@ -40,32 +42,54 @@ class EmployeeListScreen extends StatelessWidget {
             );
           }).toList();
 
-          return ListView.builder(
-            itemCount: employees.length,
-            itemBuilder: (BuildContext context, int index) {
-              final employee = employees[index];
-              Color backgroundColor = Colors.white;
-              if (employee.yearsWithCompany > 5 && employee.isActive) {
-                backgroundColor =
-                    Colors.green; // Flagged employees in green color
-              }
-              return Container(
-                padding: const EdgeInsets.all(20),
-                margin: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color:  employee.isActive ? Colors.green : Colors.red),
-                  color: employee.isActive ? Colors.greenAccent : Colors.redAccent
-                ),
-                child: ListTile(
-                  title: Text(employee.name,style: kTitle,),
-                  subtitle: Text(
-                      'Years with company: ${employee.yearsWithCompany}', style: kSubtitle,),
-                ),
-              );
-            },
-          );
         },
+        child: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance.collection('employees').snapshots(),
+          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
+
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            final List<Employee> employees = snapshot.data!.docs.map((doc) {
+              final data = doc.data() as Map<String, dynamic>;
+              return Employee(
+                name: data['name'],
+                yearsWithCompany: data['yearsWithCompany'],
+                isActive: data['isActive'],
+              );
+            }).toList();
+
+            return ListView.builder(
+              itemCount: employees.length,
+              itemBuilder: (BuildContext context, int index) {
+                final employee = employees[index];
+                Color backgroundColor = Colors.white;
+                if (employee.yearsWithCompany > 5 && employee.isActive) {
+                  backgroundColor =
+                      Colors.green; // Flagged employees in green color
+                }
+                return Container(
+                  padding: const EdgeInsets.all(20),
+                  margin: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color:  employee.isActive ? Colors.green : Colors.red),
+                    color: employee.isActive ? Colors.greenAccent : Colors.redAccent
+                  ),
+                  child: ListTile(
+                    title: Text(employee.name,style: kTitle,),
+                    subtitle: Text(
+                        'Years with company: ${employee.yearsWithCompany}', style: kSubtitle,),
+                  ),
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }
